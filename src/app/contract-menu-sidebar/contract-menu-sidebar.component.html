@@ -14,8 +14,25 @@
 
             <!-- tab content -->
 
-            <!-- First tab: Account and Provider ! -->
+            <!-- First tab: Language, Account and Provider ! -->
             <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="1">
+
+                <!-- Language start -->
+                <div class="optionrow hide-overflow ">
+                    <sui-select 
+                        placeholder="Contract language:"
+                        class="fluid ui labeled selection"
+                        [(ngModel)]="selectedLanguage"
+                        [options]="languages"
+                        tabindex="0"
+                        (selectedOptionChange)="changeLanguage($event)"
+                        #language>
+                        <sui-select-option *ngFor="let option of language.filteredOptions"
+                            [value]="option">
+                        </sui-select-option>
+                    </sui-select>
+                </div>
+                <!-- Language selection end -->
                 
                 <!-- Accountselection start -->
                 <div class="optionrow hide-overflow ">

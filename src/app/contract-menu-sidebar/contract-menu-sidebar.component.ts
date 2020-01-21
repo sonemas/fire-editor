@@ -19,6 +19,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { delay, share } from 'rxjs/operators';
 import fetchRandomAccounts from '../helpers/prefilled-accounts';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { EditorSettingsService } from '../editor-settings.service';
 //import 'rxjs/add/operator/toPromise';
 
 
@@ -44,6 +45,8 @@ export class ReplacePipe implements PipeTransform {
 
 
 export class ContractMenuSidebarComponent implements OnInit {
+  selectedLanguage = 'Sophia';
+  languages = ['Sophia', 'Lexon'];
 
   //Fires when new SDK settings are available(Accounts, )
   sdkSettingsSubscription: Subscription;
@@ -91,7 +94,8 @@ export class ContractMenuSidebarComponent implements OnInit {
   constructor(
     private compiler: CompilerService, 
     private changeDetectorRef: ChangeDetectorRef, 
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private editorSettings: EditorSettingsService) { }
  
  /*  buildAContract() {
     // make compiler emit event
@@ -100,6 +104,17 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.compiler.makeCompilerAskForCode(1);
 
   }  */
+
+  changeLanguage(event: any) {
+    console.log('Language changed to: '+ this.selectedLanguage);
+    // switch(this.selectedLanguage) {
+    //   case 'Sophia': 
+    //     this.editorSettings.language.next('aes');
+    //     break;
+    //   case 'Lexon':
+    //     this.editorSettings.language.next('lexon');
+    // }
+  }
 
   deployContract(_existingContract? : boolean) {
 
