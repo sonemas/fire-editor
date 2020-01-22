@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { distinctUntilChanged } from 'rxjs/operators';
 
@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard';
 import { Subscription, Subject } from 'rxjs';
 import { setInterval, clearInterval } from 'timers';
+import { EditorSettingsService } from '../editor-settings.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { setInterval, clearInterval } from 'timers';
   templateUrl: './one-editor-tab.component.html',
   styleUrls: ['./one-editor-tab.component.css']
 })
-export class OneEditorTabComponent implements OnInit {
+export class OneEditorTabComponent implements OnInit, OnDestroy {
 
   //the contract passed by the parent editor component
   @Input() activeContract: any = "";
@@ -80,7 +81,8 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     private compiler: CompilerService,
     private http: HttpClient,
     private _clipboardService: ClipboardService,
-    private changeDetectorRef: ChangeDetectorRef 
+    private changeDetectorRef: ChangeDetectorRef,
+    private editorSettings: EditorSettingsService
  
   ) {
     console.log("activeContract", this.activeContract);
@@ -91,6 +93,11 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
    }
 
   ngOnInit() {
+    this.editorSettings.language.subscribe(lang => {
+      console.log('editorSettings.language subscription: ' + lang);
+      this.editorOptions = Object.assign({}, this.editorOptions, {language: lang});
+    });
+
     console.log("activeContract", this.activeContract);
     this.setupCodeSharingHighlighters();
     this.setupErrorHighlighting();
@@ -131,6 +138,10 @@ this.compiler._newACI.subscribe(item => {
     }
 })
     
+  }
+
+  ngOnDestroy() {
+    this.editorSettings.language.unsubscribe(); 
   }
 
   

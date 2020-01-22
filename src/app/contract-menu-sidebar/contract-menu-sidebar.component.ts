@@ -107,13 +107,13 @@ export class ContractMenuSidebarComponent implements OnInit {
 
   changeLanguage(event: any) {
     console.log('Language changed to: '+ this.selectedLanguage);
-    // switch(this.selectedLanguage) {
-    //   case 'Sophia': 
-    //     this.editorSettings.language.next('aes');
-    //     break;
-    //   case 'Lexon':
-    //     this.editorSettings.language.next('lexon');
-    // }
+    switch(this.selectedLanguage) {
+      case 'Sophia': 
+        this.editorSettings.language.next('aes');
+        break;
+      case 'Lexon':
+        this.editorSettings.language.next('lexon');
+    }
   }
 
   deployContract(_existingContract? : boolean) {

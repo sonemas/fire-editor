@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChanges, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Compiler, HostBinding, OnChanges, SimpleChanges, ChangeDetectorRef  } from '@angular/core';
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
 import { Subscription, Subject } from 'rxjs';
@@ -18,7 +18,7 @@ import { LocalStorageService } from '../local-storage.service';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, OnDestroy {
   
   @Input() 
   // logger start //
@@ -270,6 +270,7 @@ export class EditorComponent implements OnInit {
         }
         
       }
+      
     });
 
     // If the compiler asks for code, give it to him and deploy the contract
@@ -392,7 +393,7 @@ export class EditorComponent implements OnInit {
           console.log(peng);
         }) */
   }
-
+ 
   throttledChange(){
     this.codeChanged.next();
   }
