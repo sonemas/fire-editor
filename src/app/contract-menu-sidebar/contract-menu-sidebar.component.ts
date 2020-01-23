@@ -129,6 +129,7 @@ export class ContractMenuSidebarComponent implements OnInit {
       console.log("Ein arg: ", oneArg.currentInputData)
       params.push(oneArg.currentInputData)
     });
+    console.log("params: " + params);
 
     console.log("_existingContract ist ", _existingContract);
     console.log("addressOfExistingContract ist ", this.addressOfExistingContract);
@@ -137,7 +138,6 @@ export class ContractMenuSidebarComponent implements OnInit {
     // "If the user is trying to interact with an existing contract and something is in the address field, try bringing up the existing contract, else deploy a new one"
     _existingContract && this.addressOfExistingContract.length > 50 ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
   } 
-
 
   ngOnInit() {
     //this.buildAContract();

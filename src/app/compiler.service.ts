@@ -16,6 +16,9 @@ import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
 import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { EventlogService } from './services/eventlog/eventlog.service'
+import { EditorSettingsService } from './editor-settings.service';
+import { debug } from 'util';
+import { LexonTranspilerService } from './lexon-transpiler.service';
 
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
@@ -26,6 +29,7 @@ var Ae = Universal;
   providedIn: 'root'
 })
 export class CompilerService {
+  language: String = "aes";
 
 // to be displayed in logs
   public logs: NgxLogMessage[] = [
@@ -79,12 +83,19 @@ public tellAci(): Observable < string > {
   }
 
   constructor(private http: HttpClient,
-    private eventlog: EventlogService) {
+    private eventlog: EventlogService,
+    private editorSettings: EditorSettingsService,
+    private lexonTranspiler: LexonTranspilerService) {
     this.setupClient();
     //console.log("Compilerservice initialized!");  
    }
 
   async setupClient(){
+    this.editorSettings.language.subscribe(lang => {
+      this.language = lang;
+      console.log('Compiler language switched to: ' + this.language);
+    });
+
     console.log("The random accounts: ", publicAccounts());
 
     let theAccounts = [];
@@ -167,7 +178,15 @@ public tellAci(): Observable < string > {
   async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: string) : Promise<any> {
     console.log("deploying...");
 
-    let sourceCode = this.code
+    //let sourceCode = this.code;
+    let sourceCode = '';
+    if(this.language === 'lexon') {
+      console.log('Time to invoke Lexon transpiling');
+      const r = this.lexonTranspiler.toSophia(this.code);
+      console.log('Lexon transpiling result: ', r);
+      debugger
+    } else sourceCode = this.code;
+    
     // this is seemingly being taken care of by the node now.
    /*  // replace " => \"
     sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
