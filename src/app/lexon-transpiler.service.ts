@@ -5,7 +5,7 @@ import { LexonWasm } from 'lexon-wasm';
   providedIn: 'root'
 })
 export class LexonTranspilerService {
-  private wasm: LexonWasm;
+  private wasm: any;
 
   constructor() { 
     this.wasm = new LexonWasm();
