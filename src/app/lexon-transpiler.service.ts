@@ -5,18 +5,21 @@ import { LexonWasm } from 'lexon-wasm';
   providedIn: 'root'
 })
 export class LexonTranspilerService {
+  private wasm: LexonWasm;
 
-  constructor() { }
+  constructor() { 
+    this.wasm = new LexonWasm();
+  }
 
   private compile(code: string): string {
-    return LexonWasm.call("compile", [code]);
+    return this.wasm.compile(code);
   }
 
   toSophia(code: string): string {
     const r = this.compile(code);
     console.log('Compile result: ' + r);
     
-    const sophia = LexonWasm.call("sophia");
+    const sophia = this.wasm.sophia();
     console.log('Generated Sophia: ' + sophia);
 
     return sophia;
