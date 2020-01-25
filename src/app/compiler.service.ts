@@ -17,7 +17,7 @@ import publicAccounts from './helpers/prefilled-accounts'
 import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { EventlogService } from './services/eventlog/eventlog.service'
 import { EditorSettingsService } from './editor-settings.service';
-import { debug } from 'util';
+// import { debug } from 'util';
 import { LexonTranspilerService } from './lexon-transpiler.service';
 
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
