@@ -12,16 +12,13 @@ export class LexonTranspilerService {
   }
 
   private compile(code: string): string {
-    return this.wasm.compile(code);
+    const r = this.wasm.compile(code);
+    return r;
   }
 
   toSophia(code: string): string {
     const r = this.compile(code);
-    console.log('Compile result: ' + r);
-    
-    const sophia = this.wasm.sophia();
-    console.log('Generated Sophia: ' + sophia);
-
-    return sophia;
+    if (r != 'ok') throw r;
+    return this.wasm.sophia();
   }
 }

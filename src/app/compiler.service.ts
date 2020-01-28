@@ -5,7 +5,6 @@ import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 
-
 import { Crypto } from '@aeternity/aepp-sdk/es/';
 
 import { Contract } from './contracts/hamster';
@@ -132,8 +131,23 @@ public tellAci(): Observable < string > {
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
     console.log("Das SDK: ", this.Chain);
   }
-
+  
    fromCodeToACI(code) {
+    var sourceCode = code;
+    var re = /LEX\s(.*)\./i
+    if(code.search(re) !== -1) {
+      var lexonErr: string;
+      try { sourceCode = this.lexonTranspiler.toSophia(code); }
+      catch(err) { lexonErr = err; }
+
+      if(lexonErr != undefined) {
+        // console.log("Lexon error occured: "+ lexonErr);
+        return Observable.create((observer) => observer.error({ 'error': ['Lexon compilation error: ' + lexonErr]}));
+      }
+
+      console.log("Generated code from lexon: " + sourceCode);
+    } 
+
     let compilerUrl = `${environment.compilerURL}/aci`;
     //let compilerUrl = "https://compiler.aepps.com/aci";
     const httpOptions = {
@@ -142,10 +156,26 @@ public tellAci(): Observable < string > {
         'Sophia-Compiler-Version': '4.0.0'
       })
     };
-    return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
+    return this.http.post<any>(compilerUrl, {"code":`${sourceCode}`, "options":{}}, httpOptions);
    }
 
    getErrorsFromDebugCompiler(code) {
+    var sourceCode = code;
+    var re = /LEX\s(.*)\./i
+    if(code.search(re) !== -1) {
+      var lexonErr: string;
+      try { sourceCode = this.lexonTranspiler.toSophia(code); }
+      catch(err) { lexonErr = err; }
+
+      if(lexonErr != undefined) {
+        // console.log("Lexon error occured: "+ lexonErr);
+        return Observable.create((observer) => observer.error({ 'error': ['Lexon compilation error: ' + lexonErr]}));
+      }
+
+      console.log("Generated code from lexon: " + sourceCode);
+    } 
+
+    debugger
     let compilerUrl = `${environment.debugCompilerURL}/aci`;
     //let compilerUrl = "http://145.239.150.239:3080/aci";
     const httpOptions = {
@@ -154,7 +184,7 @@ public tellAci(): Observable < string > {
         'Sophia-Compiler-Version': '4.0.0'
       })
     };
-    return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
+    return this.http.post<any>(compilerUrl, {"code":`${sourceCode}`, "options":{}}, httpOptions);
    }
 
   // emits an event passing data from all SDK functions that take 0 parameters,
@@ -180,11 +210,12 @@ public tellAci(): Observable < string > {
 
     //let sourceCode = this.code;
     let sourceCode = '';
+    debugger
     if(this.language === 'lexon') {
       console.log('Time to invoke Lexon transpiling');
+      debugger
       const r = this.lexonTranspiler.toSophia(this.code);
       console.log('Lexon transpiling result: ', r);
-      debugger
     } else sourceCode = this.code;
     
     // this is seemingly being taken care of by the node now.
